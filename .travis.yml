@@ -1,0 +1,15 @@
+sudo: required
+
+language: scala
+
+scala:
+  - 2.11.5
+
+jdk:
+  - oraclejdk8
+
+services:
+  - docker
+
+script:
+  - ./run 'docker-compose up && docker ps'
