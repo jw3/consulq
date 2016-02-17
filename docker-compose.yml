@@ -14,3 +14,8 @@ registrator:
   - consul
   volumes:
   - "/var/run/docker.sock:/tmp/docker.sock"
+
+elastic:
+  image: "elasticsearch:latest"
+  ports:
+  - "9200:9200"

@@ -11,5 +11,10 @@ jdk:
 services:
   - docker
 
+before_script:
+  - docker-compose up -d
+  - docker ps -a
+  - curl http://127.0.0.1:8500/v1/catalog/service/elasticsearch-9200
+
 script:
-  - ./run 'docker-compose up && docker ps'
+  - echo "success"
