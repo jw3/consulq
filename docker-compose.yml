@@ -1,20 +1,27 @@
 consul:
-  command: -server -bootstrap # -advertise 10.0.2.15
+  command: -server -bootstrap
   image: gliderlabs/consul-server:latest
   ports:
-  - "8400:8400"
-  - "8500:8500"
-  - "172.17.0.1:53:8600/udp"
+    - "8400:8400"
+    - "8500:8500"
+    - "172.17.0.1:53:8600/udp"
 
 registrator:
   command: consul://consul:8500
   image: gliderlabs/registrator:latest
   links:
-  - consul
+    - consul
   volumes:
-  - "/var/run/docker.sock:/tmp/docker.sock"
+    - "/var/run/docker.sock:/tmp/docker.sock"
 
 elastic:
   image: "elasticsearch:latest"
+  dns:
+    - "172.17.0.1"
+  dns_search:
+    - "service.consul"
   ports:
-  - "9200:9200"
+    - "9200:9200"
+  environment:
+    SERVICE_NAME: elastic
+    SERVICE_TAGS: search
