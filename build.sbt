@@ -9,6 +9,8 @@ libraryDependencies ++= {
   val akkaVersion = "2.4.2"
 
   Seq(
+    "net.ceedubs" %% "ficus" % "1.1.2",
+
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-stream" % akkaVersion,
     "com.typesafe.akka" %% "akka-http-experimental" % akkaVersion,
