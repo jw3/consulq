@@ -17,8 +17,8 @@ class QueryConsul extends TestKit(ActorSystem()) with WordSpecLike with Implicit
 
   "ConsulServices util" should {
     "list all services" in {
-      val config = Await.result(ConsulServices.services(), 10.seconds)
-      println(config.root().render(ConfigRenderOptions.concise()))
+      val services = Await.result(ConsulServices.services(), 10.seconds)
+      println(services)
     }
   }
 }
