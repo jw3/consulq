@@ -28,3 +28,16 @@ elastic:
     SERVICE_CHECK_HTTP: /
     SERVICE_CHECK_INTERVAL: 15s
     SERVICE_CHECK_TIMEOUT: 1s
+
+mattermost:
+  image: mattermost/platform:2.0
+  dns:
+    - "172.17.0.1"
+  dns_search:
+    - "service.consul"
+  ports:
+    - "8080:80"
+  environment:
+    SERVICE_CHECK_HTTP: /
+    SERVICE_CHECK_INTERVAL: 15s
+    SERVICE_CHECK_TIMEOUT: 1s
