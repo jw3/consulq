@@ -1,13 +1,13 @@
 consul:
-  command: -server -bootstrap
+  command: -server -bootstrap -advertise 192.168.99.100
   image: gliderlabs/consul-server:latest
   ports:
     - "8400:8400"
     - "8500:8500"
-    - "172.17.0.1:53:8600/udp"
+    - "192.168.99.100:53:8600/udp"
 
 registrator:
-  command: consul://consul:8500
+  command: -ip 192.168.99.100 consul://consul:8500
   image: gliderlabs/registrator:latest
   links:
     - consul
@@ -25,3 +25,6 @@ elastic:
   environment:
     SERVICE_NAME: elastic
     SERVICE_TAGS: search
+    SERVICE_CHECK_HTTP: /
+    SERVICE_CHECK_INTERVAL: 15s
+    SERVICE_CHECK_TIMEOUT: 1s
