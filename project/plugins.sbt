@@ -1,4 +1,4 @@
 logLevel := Level.Warn
 
-resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases/"
-addSbtPlugin("com.typesafe.sbt" %% "sbt-native-packager" % "1.0.6")
+addSbtPlugin("me.lessis" % "bintray-sbt" % "0.3.0")
+addSbtPlugin("com.updateimpact" % "updateimpact-sbt-plugin" % "2.1.1")

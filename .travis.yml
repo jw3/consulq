@@ -3,7 +3,7 @@ sudo: required
 language: scala
 
 scala:
-  - 2.11.5
+  - 2.11.8
 
 jdk:
   - oraclejdk8
@@ -14,3 +14,6 @@ services:
 before_script:
   - docker-compose up -d
   - docker ps -a
+
+script:
+  - sbt ++$TRAVIS_SCALA_VERSION test updateImpactSubmit
