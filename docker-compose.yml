@@ -4,7 +4,7 @@ consul:
   ports:
     - "8400:8400"
     - "8500:8500"
-    - "172.17.0.1:53:8600/udp"
+    #- "172.17.0.1:53:8600/udp"
 
 registrator:
   command: -ip 172.17.0.1 consul://consul:8500
