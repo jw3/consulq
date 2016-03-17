@@ -3,21 +3,25 @@ package consulq
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.testkit.{ImplicitSender, TestKit}
-import org.scalatest.{Matchers, WordSpecLike}
-
-import scala.concurrent.Await
-import scala.concurrent.duration.DurationInt
+import org.scalatest.{AsyncWordSpecLike, Matchers}
 
 /**
  *
  */
-class QueryConsul extends TestKit(ActorSystem()) with WordSpecLike with ImplicitSender with Matchers {
+class QueryConsul extends TestKit(ActorSystem()) with AsyncWordSpecLike with ImplicitSender with Matchers {
   implicit val mat = ActorMaterializer()
 
-  "ConsulServices util" should {
+  "queries" should {
     "list all services" in {
-      val services = Await.result(ConsulQuery().services(), 10.seconds)
-      println(services)
+      ConsulQuery().services().map { res =>
+        res.size shouldBe 7
+      }
+    }
+
+    "get service names" in {
+      ConsulQuery().services().map { res =>
+        res.collect { case ConsulService(name, _, _, _) => name } should contain allOf("mm", "elastic")
+      }
     }
   }
 }

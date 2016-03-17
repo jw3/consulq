@@ -38,6 +38,8 @@ mattermost:
   ports:
     - "8080:80"
   environment:
+    SERVICE_NAME: mm
+    SERVICE_TAGS: chat
     SERVICE_CHECK_HTTP: /
     SERVICE_CHECK_INTERVAL: 15s
     SERVICE_CHECK_TIMEOUT: 1s
