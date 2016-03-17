@@ -11,12 +11,14 @@ com.updateimpact.Plugin.apiKey in ThisBuild := sys.env.getOrElse("UPDATEIMPACT_A
 
 libraryDependencies ++= {
   val akkaVersion = "2.4.2"
+  val scalaTest = "3.0.0-M15"
 
   Seq(
     "com.typesafe.akka" %% "akka-stream" % akkaVersion,
     "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaVersion,
 
-    "org.scalatest" %% "scalatest" % "2.2.5" % Test,
+    "org.scalactic" %% "scalactic" % scalaTest % Test,
+    "org.scalatest" %% "scalatest" % scalaTest % Test,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test
   )
 }
