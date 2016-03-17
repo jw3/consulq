@@ -2,66 +2,69 @@ package wiii
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
-import akka.http.scaladsl.unmarshalling._
-import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{Flow, Sink, Source}
+import akka.http.scaladsl.Http.OutgoingConnection
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import scala.concurrent.Future
-import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{HttpResponse, HttpRequest}
+import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
-import akka.util.Timeout
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory._
-import scala.concurrent.Await
-import scala.concurrent.duration.{Duration, DurationInt}
-import scala.concurrent.ExecutionContext.Implicits.global
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import akka.http.scaladsl.unmarshalling._
-import Protocols._
+import wiii.ConsulServiceProtocols._
 
-/**
- * {
- * "Node": "foobar",
- * "Address": "10.1.10.12",
- * "ServiceID": "redis",
- * "ServiceName": "redis",
- * "ServiceTags": null,
- * "ServiceAddress": "",
- * "ServicePort": 8000
- * }
- */
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+
 object ConsulServices {
-  def source(path: String) = Source.single(HttpRequest(uri = path))
+  type Connection = Flow[HttpRequest, HttpResponse, Future[OutgoingConnection]]
+  val apiver = "v1"
+
+  def apply()(implicit system: ActorSystem, mat: ActorMaterializer): ConsulServices = {
+    new ConsulServices("localhost")
+  }
+}
+
+class ConsulServices(consulhost: String)(implicit system: ActorSystem, mat: ActorMaterializer) {
+  import ConsulServices._
+
+  /**
+   * Execute service query against Consul, returning all registered [[ConsulService]]
+   *
+   * @return Sequence of ConsulServices
+   */
+  def services(): Future[Seq[ConsulService]] = {
+    query(connection()).runWith(Sink.seq)
+  }
 
 
   /**
-   * List all services defined by the specified Consul host
-   * @param consulHostname
-   * @param system
-   * @param mat
+   * Query Consul for all services using /v1/catalog/services
+   *
+   * The keys are the service names, and the array values provide all known tags for a given service.
+   *
+   * Example Response:
+   * {
+   * "consul": [],
+   * "redis": [],
+   * "postgresql": [
+   * "master",
+   * "slave"
+   * ]
+   * }
+   *
+   * @param conn http connection
    * @return
    */
-  def services(consulHostname: String = "localhost")(implicit system: ActorSystem, mat: ActorMaterializer): Future[Seq[ConsulService]] = {
-    val conn = Http().outgoingConnection(consulHostname, 8500)
+  private def query(conn: Connection) = {
+    val flow = Flow[HttpResponse]
+               .mapAsync(1)(r => Unmarshal(r.entity).to[Map[String, Seq[String]]])
+               .map(_.keys)
+               .flatMapConcat(x => Source.fromIterator(() => x.iterator))
+               .flatMapMerge(1, svc => source(s"/$apiver/catalog/service/$svc").via(conn))
+               .mapAsync(1)(r => Unmarshal(r.entity).to[Seq[ConsulService]].map(_.head))
 
-    // the flows are a work in progress, not entirely sure each is best way to do it.. but working
-    // also would be ideal to have the flows exist outside the services function, so they are not recreated each call
-    val map = Flow[HttpResponse].mapAsync(1)(r => Unmarshal(r.entity).to[Map[String, Seq[String]]]).map(_.keys)
-    val map2 = Flow[Iterable[String]].flatMapConcat(x => Source.fromIterator(() => x.iterator))
-    val map3 = Flow[String].flatMapMerge(1, svc => source(s"/v1/catalog/service/$svc").via(conn))
-    val map4 = Flow[HttpResponse].mapAsync(1)(r => Unmarshal(r.entity).to[Seq[ConsulService]].map(_.head))
-
-    source("/v1/catalog/services")
-    .via(conn)
-    .via(map)
-    .via(map2)
-    .via(map3)
-    .via(map4)
-    .runWith(Sink.seq)
+    source(s"/$apiver/catalog/services").via(conn).via(flow)
   }
+
+  private def source(path: String) = Source.single(HttpRequest(uri = path))
+  private def connection() = Http().outgoingConnection(consulhost, 8500)
 }
