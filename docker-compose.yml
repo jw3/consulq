@@ -1,13 +1,13 @@
 consul:
-  command: -server -bootstrap -advertise 192.168.99.100
+  command: -server -bootstrap -advertise 172.17.0.1
   image: gliderlabs/consul-server:latest
   ports:
     - "8400:8400"
     - "8500:8500"
-    - "192.168.99.100:53:8600/udp"
+    - "172.17.0.1:53:8600/udp"
 
 registrator:
-  command: -ip 192.168.99.100 consul://consul:8500
+  command: -ip 172.17.0.1 consul://consul:8500
   image: gliderlabs/registrator:latest
   links:
     - consul
