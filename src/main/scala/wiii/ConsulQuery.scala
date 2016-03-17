@@ -8,23 +8,26 @@ import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
-import wiii.ConsulServiceProtocols._
+import wiii.ConsulServiceProtocol._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-object ConsulServices {
+/**
+ * Query the consul
+ */
+object ConsulQuery {
   type Connection = Flow[HttpRequest, HttpResponse, Future[OutgoingConnection]]
   val apiver = "v1"
 
-  def apply()(implicit system: ActorSystem, mat: ActorMaterializer): ConsulServices = {
-    new ConsulServices("localhost")
+  def apply()(implicit system: ActorSystem, mat: ActorMaterializer): ConsulQuery = {
+    new ConsulQuery("localhost")
   }
 }
 
-class ConsulServices(consulhost: String)(implicit system: ActorSystem, mat: ActorMaterializer) {
-  import ConsulServices._
+class ConsulQuery(consulhost: String)(implicit system: ActorSystem, mat: ActorMaterializer) {
+  import ConsulQuery._
 
   /**
    * Execute service query against Consul, returning all registered [[ConsulService]]
