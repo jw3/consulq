@@ -1,4 +1,4 @@
-package wiii
+package consulq
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -8,7 +8,7 @@ import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
-import wiii.ConsulServiceProtocol._
+import consulq.ConsulServiceProtocol._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

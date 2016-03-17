@@ -1,9 +1,8 @@
-package wiii
+package consulq
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.testkit.{ImplicitSender, TestKit}
-import com.typesafe.config.ConfigRenderOptions
 import org.scalatest.{Matchers, WordSpecLike}
 
 import scala.concurrent.Await
