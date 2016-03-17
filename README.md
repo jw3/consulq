@@ -11,7 +11,7 @@ Add the bintray resolver
 
 ```resolvers += "jw3 at bintray" at "https://dl.bintray.com/jw3/maven"```
 
-Add the mm4s dependency
+Add the consulq dependency
 
 ```"com.github.jw3" %% "consulq" % "0.1"```
 
