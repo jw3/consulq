@@ -15,7 +15,14 @@ import scala.concurrent.Future
 
 
 /**
- * Query the consul
+ * Query the Consul service capturing the service info and converting it to [[ConsulService]]
+ *
+ * There is no filtering available here due to the invconvenient filtering in Consul.
+ *
+ * Basically just capture all services, and then filtering can be performed on the bean list
+ * afterwards.  This could be modified to prevent some unmarshalling later, but its not that
+ * great of worry at this point.
+ *
  */
 object ConsulQuery {
   type Connection = Flow[HttpRequest, HttpResponse, Future[OutgoingConnection]]
@@ -62,6 +69,8 @@ class ConsulQuery(consulhost: String)(implicit system: ActorSystem, mat: ActorMa
                .mapAsync(1)(r => Unmarshal(r.entity).to[Map[String, Seq[String]]])
                .map(_.keys)
                .flatMapConcat(x => Source.fromIterator(() => x.iterator))
+               // hit the server again and resolve additional service info
+               // todo; validate this nested source is correct pattern
                .flatMapMerge(1, svc => source(s"/$apiver/catalog/service/$svc").via(conn))
                .mapAsync(1)(r => Unmarshal(r.entity).to[Seq[ConsulService]].map(_.head))
 
