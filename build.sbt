@@ -1,6 +1,6 @@
 organization := "com.github.jw3"
 name := "consulq"
-description := "Query services registered in Consul"
+description := "Queries for Consul in Scala"
 version := "0.1"
 
 scalaVersion := "2.11.8"

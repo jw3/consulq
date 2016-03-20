@@ -1,4 +1,4 @@
-#### Consul Query
+#### Queries for Consul in Scala
 -
 [![Build Status](https://travis-ci.org/jw3/consulq.svg?branch=master)](https://travis-ci.org/jw3/consulq)
 [![Dependencies](https://app.updateimpact.com/badge/701268856357916672/consulq.svg?config=compile)](https://app.updateimpact.com/latest/701268856357916672/consulq)
