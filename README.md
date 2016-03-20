@@ -5,6 +5,7 @@
 [![Download](https://api.bintray.com/packages/jw3/maven/consulq/images/download.svg) ](https://bintray.com/jw3/maven/consulq/_latestVersion)
 
 Query Consul for [service registrations](https://www.consul.io/docs/agent/http/catalog.html).
+
 Query Consul [Key/Value store](https://www.consul.io/docs/agent/http/kv.html), add/remove keys.
 
 #### Artifacts

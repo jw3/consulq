@@ -5,7 +5,6 @@ import scala.collection.JavaConversions._
 
 package object consulq {
   type RequestBuilder = HttpRequest => HttpRequest
-  val nopbuilder: RequestBuilder = r => r
 
   def toConfig(kvs: Seq[ConsulKV]): Config = {
     val kvmap = kvs.flatMap(kv => kv.value.map(kv.key -> _)).toMap

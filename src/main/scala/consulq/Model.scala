@@ -17,7 +17,7 @@ import spray.json._
 case class ConsulService(name: String, address: String, port: Int, tags: List[String])
 
 object ConsulServiceProtocol extends DefaultJsonProtocol {
-  implicit val details: RootJsonFormat[ConsulService] =
+  implicit val details: JsonFormat[ConsulService] =
     jsonFormat(ConsulService, "ServiceName", "ServiceAddress", "ServicePort", "ServiceTags")
 }
 
@@ -38,5 +38,5 @@ case class ConsulKV(key: String, base64value: Option[String]) {
 }
 
 object ConsulKvProtocol extends DefaultJsonProtocol {
-  implicit val details: RootJsonFormat[ConsulKV] = jsonFormat(ConsulKV, "Key", "Value")
+  implicit val details: JsonFormat[ConsulKV] = jsonFormat(ConsulKV, "Key", "Value")
 }

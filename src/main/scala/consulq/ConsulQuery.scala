@@ -31,6 +31,10 @@ object ConsulQuery {
   val apiver = "v1"
 
   def apply()(implicit system: ActorSystem, mat: ActorMaterializer): ConsulQuery = {
+    ConsulQuery("localhost")
+  }
+
+  def apply(host: String)(implicit system: ActorSystem, mat: ActorMaterializer): ConsulQuery = {
     new ConsulQuery("localhost")
   }
 }
