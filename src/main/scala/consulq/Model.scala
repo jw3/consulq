@@ -1,5 +1,6 @@
 package consulq
 
+import com.github.marklister.base64.Base64
 import spray.json._
 
 
@@ -32,8 +33,8 @@ object ConsulServiceProtocol extends DefaultJsonProtocol {
  * }
  */
 case class ConsulKV(key: String, base64value: Option[String]) {
-  lazy val value = {
-    // unbase64 base64value
+  lazy val value: Option[String] = {
+    base64value.map(Base64.Decoder(_).toByteArray.map(_.toChar).mkString)
   }
 }
 
