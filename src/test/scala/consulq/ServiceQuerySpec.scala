@@ -20,7 +20,7 @@ class ServiceQuerySpec extends TestKit(ActorSystem()) with AsyncWordSpecLike wit
 
     "get service names" in {
       ConsulQuery().services().map { res =>
-        res.collect { case ConsulService(name, _, _, _) => name } should contain allOf("mm", "elastic")
+        res.collect { case ConsulService(name, _, _, _) => name } should contain allOf("service1", "service2")
       }
     }
   }

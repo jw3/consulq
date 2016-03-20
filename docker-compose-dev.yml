@@ -14,8 +14,23 @@ registrator:
   volumes:
     - "/var/run/docker.sock:/tmp/docker.sock"
 
-svc1:
-  image: "nginx:alpine"
+elastic:
+  image: "elasticsearch:latest"
+  dns:
+    - "172.17.0.1"
+  dns_search:
+    - "service.consul"
+  ports:
+    - "9200:9200"
+  environment:
+    SERVICE_NAME: elastic
+    SERVICE_TAGS: search
+    SERVICE_CHECK_HTTP: /
+    SERVICE_CHECK_INTERVAL: 15s
+    SERVICE_CHECK_TIMEOUT: 1s
+
+mattermost:
+  image: mattermost/platform:2.0
   dns:
     - "172.17.0.1"
   dns_search:
@@ -23,22 +38,7 @@ svc1:
   ports:
     - "8080:80"
   environment:
-    SERVICE_NAME: service1
-    SERVICE_TAGS: search
-    SERVICE_CHECK_HTTP: /
-    SERVICE_CHECK_INTERVAL: 15s
-    SERVICE_CHECK_TIMEOUT: 1s
-
-svc2:
-  image: "nginx:alpine"
-  dns:
-    - "172.17.0.1"
-  dns_search:
-    - "service.consul"
-  ports:
-    - "8081:80"
-  environment:
-    SERVICE_NAME: service2
+    SERVICE_NAME: mm
     SERVICE_TAGS: chat
     SERVICE_CHECK_HTTP: /
     SERVICE_CHECK_INTERVAL: 15s
