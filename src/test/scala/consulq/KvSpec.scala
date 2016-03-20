@@ -6,7 +6,6 @@ import akka.Done
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.testkit.{ImplicitSender, TestKit}
-import com.github.marklister.base64.Base64
 import org.scalatest.{AsyncWordSpecLike, Matchers}
 
 /**
@@ -52,7 +51,7 @@ class KvSpec extends TestKit(ActorSystem()) with AsyncWordSpecLike with Implicit
       ConsulQuery().putKV(key, value).flatMap(r => ConsulQuery().getKV(key)).collect {
         case Some(kv) =>
           kv.base64value shouldNot be(Some(value))
-          kv.base64value shouldBe Some(Base64.Encoder(value.getBytes).toBase64)
+          kv.base64value shouldBe Some(toBase64(value))
       }
     }
 
